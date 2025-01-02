@@ -1,0 +1,45 @@
+name: TEST COPY PATH
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]  
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Listar diretórios na raiz
+      run: |
+       echo "Listando todos os diretórios na raiz:"
+       ls -d */  # Lista diretórios na raiz
+    
+    - name: Listar todos os diretórios e subdiretórios
+      run: |
+       echo "Listando todos os diretórios e subdiretórios:"
+       find . -type d
+    
+    - name: Procurar por pastas que contêm 'TESTE'
+      run: |
+       echo "Procurando por pastas que contêm 'TESTE':"
+       find . -type d | grep "TESTE"
+    
+    - name: Verificar estrutura de diretórios após checkout
+      run: |
+       echo "Estrutura de diretórios após checkout:"
+       ls -R
+
+    - name: Verificar o caminho
+      run: |
+       CAMINHO_XML=$(find . -type d -name "Xml" -path "*/TESTE UNITÁRIO/*" -print)
+       if [ -z "$CAMINHO_XML" ]; then
+           echo "Diretório 'TESTE UNITÁRIO/Xml' não encontrado."
+           exit 1
+         else
+           echo "Diretório encontrado: $CAMINHO_XML"
+           echo "::set-output name=caminho::$CAMINHO_XML"
+         fi
